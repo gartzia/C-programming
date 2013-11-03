@@ -30,12 +30,11 @@ int main()
     int Ok=0, nFilas=0, nColumnas=0;
     int tipo=0;
     
-    //leer_array
+    //solicitar número de Filas y Columnas de la Matriz A:
     nFilas=solicitarFilas(nFilas, Ok);
     nColumnas=solicitarColumnas(nColumnas, Ok);
 
-    //Reservar memoria
-    //reservar_memoria(array, nFilas, nColumnas);
+    //reservar_memoria para array - Matriz A
     if ((array=(int **)malloc(nFilas * sizeof(int *))) == NULL)
     {
         printf("\nInsuficiente espacio de memoria:\n");
@@ -49,7 +48,7 @@ int main()
         }
     }
     
-    //reservar_memoria(array_t, nFilas, nColumnas);
+    //reservar_memoria array_t - Matriz A transpuesta
     if ((array_t=(int **)malloc(nFilas * sizeof(int *))) == NULL)
     {
         printf("\nInsuficiente espacio de memoria:\n");
@@ -63,7 +62,7 @@ int main()
         }
     }
     
-    //reservar_memoria(indices, nFilas, nColumnas);
+    //reservar_memoria para indices - Matriz con números mayores de A
     if ((indices=(int **)malloc(nFilas * sizeof(int *))) == NULL)
     {
         printf("\nInsuficiente espacio de memoria:\n");
@@ -77,7 +76,7 @@ int main()
         }
     }
     
-    //reservar_memoria(indices2, nFilas, nColumnas);
+    //reservar_memoria para indices2 - Matriz con números menores de A
     if ((indices2=(int **)malloc(nFilas * sizeof(int *))) == NULL)
     {
         printf("\nInsuficiente espacio de memoria:\n");
@@ -91,7 +90,7 @@ int main()
         }
     }
     
-    //reservar_memoria(indices_t, nFilas, nColumnas);
+    //reservar_memoria para indices_t - Matriz con números mayores de A
     if ((indices_t=(int **)malloc(nFilas * sizeof(int *))) == NULL)
     {
         printf("\nInsuficiente espacio de memoria:\n");
@@ -105,7 +104,7 @@ int main()
         }
     }
     
-    //reservar_memoria(indices2_t, nFilas, nColumnas);
+    //reservar_memoria para indices2_t - Matriz con números menores de A
     if ((indices2_t=(int **)malloc(nFilas * sizeof(int *))) == NULL)
     {
         printf("\nInsuficiente espacio de memoria:\n");
@@ -119,66 +118,37 @@ int main()
         }
     }
     
-    //lenar_array:
+    //Recoger los valores de la Matriz A:
     llenar_array(array, nFilas, nColumnas);
  
-    //visualizar_array
+    //Visualizar Matriz A:
     visualizar_array(array, nFilas, nColumnas, tipo);
-    
-    
-    //-------------------------
 
-    //inicializar indices, indices2, indices_t y indices2_t
+    //Inicializar arrays: indices, indices2, indices_t y indices2_t
     inicializar_indices_mayores(indices, nFilas, nColumnas);
     inicializar_indices_mayores(indices2, nFilas, nColumnas);
     inicializar_indices_mayores(indices_t, nFilas, nColumnas);
     inicializar_indices_mayores(indices2_t, nFilas, nColumnas);
-    //Mayores para array a
+    
+    //Clacular elemntos mayores de cada Fila del la Matriz A:
     calcular_mayores(array, indices, nFilas, nColumnas); 
-    //Menores para array a
+    //Clacular elemntos menores de cada Fila del la Matriz A:
     calcuar_menores(array, indices2, nFilas, nColumnas);
-    //traspuesta
+    
+    //Matriz A Transpuesta:
     traspuesta(array, array_t, nFilas, nColumnas);
     
-    //visualizar_array t
+    //Visualizar Matriz A Transpuesta
     tipo=1;
     visualizar_array(array_t, nFilas, nColumnas, tipo);
     
-    //Mayores para array t
+    //Clacular elemntos mayores de cada Fila del la Matriz A Transpuesta:
     calcular_mayores(array_t, indices_t, nFilas, nColumnas); 
-/*
-    printf("\n");
-    for(a=0;a<nFilas;a++)
-    {
-        for(i=0,j=0;i<nColumnas;i++)
-        {
-            if(array_t[a][i]>array_t[a][j])
-            {
-                j=i;
-            }
-        }
-        indices_t[a][j]=array_t[a][j];
-        printf("Mayores A%d-%d: %d\n", a, j, indices_t[a][j]);
-    }
-   */ 
-    //Menores para array t
+    //Clacular elemntos menores de cada Fila del la Matriz A:
     calcuar_menores(array_t, indices2_t, nFilas, nColumnas);
-/*
-    printf("---------------\n");
-    for(a=0;a<nFilas;a++)
-    {
-        for(i=0,j=0;i<nColumnas;i++)
-        {
-            if(array_t[a][i]<array_t[a][j])
-            {
-                j=i;
-            }
-        }
-        indices2_t[a][j]=array_t[a][j];
-        printf("Menores A%d-%d: %d\n", a, j, indices2_t[a][j]);
-    }
- */   
-    //Comparar indices de array y array_t (indices, indices2 y indices_t, indices2_t))
+
+    
+    //Comparar mayores-menores (A-At) y menores-mayores (A-At):
     comprobar_punto_de_silla(array, array_t, indices, indices2, indices_t, indices2_t, nFilas, nColumnas);
         
     
@@ -361,41 +331,4 @@ int repetido(int i, int j,int **array, int nColumnas)
 
     return frecuencia;
 }
-//------------------
-
-/*
- 
- void reservar_memoria(int **array, int nFilas, int nColumnas)
-{
-    int i;
-    
-    //comprobar si hay memoeria
-    if ((array=(int **)malloc(nFilas * sizeof(int *))) == NULL)
-    {
-        printf("\nInsuficiente espacio de memoria:\n");
-        exit(-1);
-    }
-    
-    if ((array_t=(int **)malloc(nFilas * sizeof(int *))) == NULL)
-    {
-        printf("\nInsuficiente espacio de memoria:\n");
-        exit(-1);
-    }
-    
-    //reserva ¡OJO! mirar
-    array=(int **)malloc(nFilas*sizeof(int *));
-    array_t=(int **)malloc(nFilas*sizeof(int *));
-    
-    for(i=0;i<nFilas;i++)
-    {
-        array[i]=malloc(nColumnas*sizeof(int *));
-    }
-    
-    for(i=0;i<nFilas;i++)
-    {
-        array_t[i]=malloc(nColumnas*sizeof(int *));
-    }
-     
-}
- 
- */
+//---FIN---
