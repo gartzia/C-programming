@@ -18,12 +18,12 @@ void inicializar_indices_mayores(int array[][2]);
 void calcular_mayores(int array[][2], int indices[][2]);
 void calcuar_menores(int array[][2], int indices2[][2]);
 void traspuesta(int array[][2], int array_t[][2]);
-void comprobar_punto_de_silla(int array[][2], int array_t[][2], int indices[][2], int indices2[][2], int indices_t[][2], int indices2_t[][2]);
+void comprobar_punto_de_silla(int array[][2], int array_t[][2], int indices[][2], int indices2[][2]);
 int repetido(int i, int j, int array[][2]);
 
 int main()
 {  
-    int array[2][2], array_t[2][2], indices[2][2], indices2[2][2], indices_t[2][2], indices2_t[2][2];
+    int array[2][2], array_t[2][2], indices[2][2], indices2[2][2];
     int tipo=0;
     
     printf("\nInserta los elementos para una matriz de 2X2:\n");
@@ -37,13 +37,6 @@ int main()
     //inicializar indices, indices2, indices_t y indices2_t
     inicializar_indices_mayores(indices);
     inicializar_indices_mayores(indices2);
-    inicializar_indices_mayores(indices_t);
-    inicializar_indices_mayores(indices2_t);
-    
-    //Mayores para array a
-    calcular_mayores(array, indices); 
-    //Menores para array a
-    calcuar_menores(array, indices2);
     
     //traspuesta
     traspuesta(array, array_t);
@@ -52,13 +45,25 @@ int main()
     tipo=1;
     visualizar_array(array_t, tipo);
     
+    //Mayores para array a
+    calcular_mayores(array, indices); 
+    //Menores para array a
+    calcuar_menores(array_t, indices2);
+    
+    //Comparar indices de array y array_t (indices, indices2 y indices_t, indices2_t))
+    comprobar_punto_de_silla(array, array_t, indices, indices2);
+    
+    //inicializar indices, indices2, indices_t y indices2_t
+    inicializar_indices_mayores(indices);
+    inicializar_indices_mayores(indices2);
+    
     //Mayores para array t
-    calcular_mayores(array_t, indices_t); 
+    calcular_mayores(array_t, indices2); 
     //Menores para array t
-    calcuar_menores(array_t, indices2_t);
+    calcuar_menores(array, indices);
    
     //Comparar indices de array y array_t (indices, indices2 y indices_t, indices2_t))
-    comprobar_punto_de_silla(array, array_t, indices, indices2, indices_t, indices2_t);
+    comprobar_punto_de_silla(array, array_t, indices, indices2);
         
     
     return 0;
@@ -171,7 +176,7 @@ void traspuesta(int array[][2], int array_t[][2])
     }
 }
 
-void comprobar_punto_de_silla(int array[][2], int array_t[][2], int indices[][2], int indices2[][2], int indices_t[][2], int indices2_t[][2])
+void comprobar_punto_de_silla(int array[][2], int array_t[][2], int indices[][2], int indices2[][2])
 {
     int i, j, repes;
     for(i=0;i<2;i++)
@@ -180,21 +185,11 @@ void comprobar_punto_de_silla(int array[][2], int array_t[][2], int indices[][2]
         {
             if(indices[i][j]!=0)
             {
-                if(indices[i][j]==indices2_t[j][i])
+                if(indices[i][j]==indices2[j][i])
                 {
                     if((repes=repetido(i, j, array)<2) && (repes=repetido(j, i, array_t)<2))
                     {
                         printf("\nPunto de Silla: %d -> A:%d-%d\n", indices[i][j], i+1,j+1);
-                    }
-                }
-            }
-            if(indices2[i][j]!=0)
-            {
-                if(indices2[i][j]==indices_t[j][i])
-                {
-                    if((repes=repetido(i, j, array)<2) && (repes=repetido(j, i, array_t)<2))
-                    {
-                        printf("\nPunto de Silla: %d -> A:%d-%d", indices2[i][j], i+1, j+1);
                     }
                 }
             }
