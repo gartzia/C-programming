@@ -22,9 +22,17 @@ int main()
     int frecuencia[RANGO];
     
     printf("\n--------------Contador de carácteres repetidos--------------\n");
+    
+    //lee los elementos del array
     leer_array(cadena);
+    
+    //inicializa el array frecuencia
     inicializar_array(frecuencia);
+    
+    //calcula el número de veces que se repiten los carácteres
     maximos(cadena, frecuencia);
+    
+    //visualiza los elementos que más se repiten
     visualizar_max_repetidos(cadena, frecuencia);
     
     return 0;

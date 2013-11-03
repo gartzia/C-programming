@@ -11,8 +11,6 @@
 /*
  * 
  */
-int solicitar_Filas(int numero);
-int solicitar_Columnas(int numero);
 void inicializar_mapa(int estrellas[][4]);
 void leer_array(int array[][4]);
 void crear_mapa(int array[][4], int estrellas[][4]);
@@ -23,12 +21,16 @@ int main()
 {
     int array[4][4], estrellas[4][4];
     
+    //inicializar a Ceros el mapa de salida:
     inicializar_mapa(estrellas);
     
+    //leer los datos del array
     leer_array(array);
     
+    //indicar estrellas en el mapa:
     crear_mapa(array, estrellas);
     
+    //visualizar mapa de estrellas:
     visualizar_mapa(estrellas);
 
     return (0);
@@ -59,6 +61,7 @@ void leer_array(int array[][4])
         
         for(j=0;j<4;j++)
         {
+            //Es necesario que los valores de los elementos estén entre 0 y 20:
             do
             {
                 printf("\nInserta el elemento %d-%d\n", i+1, j+1);

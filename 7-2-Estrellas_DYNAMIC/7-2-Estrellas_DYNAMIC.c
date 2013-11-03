@@ -11,8 +11,7 @@
 /*
  * 
  */
-int solicitar_Filas(int numero);
-int solicitar_Columnas(int numero);
+int solicitartamano(int numero, int a);
 void inicializar_mapa(int **estrellas, int nFilas, int nColumnas);
 void leer_array(int **array, int nFilas, int nColumnas);
 void crear_mapa(int **array, int **estrellas, int nFilas, int nColumnas);
@@ -24,10 +23,11 @@ int main()
     int **array=NULL, **estrellas=NULL;
     int nFilas, nColumnas, i;
     
-    nFilas=solicitar_Filas(nFilas);
-    nColumnas=solicitar_Columnas(nColumnas);
+    //solicitar el tamaño del array
+    nFilas=solicitartamano(nFilas, 0);
+    nColumnas=solicitartamano(nColumnas, 1);
     
-    //reservar memoria
+    //reservar memoria para array:
     if((array=(int **)malloc(nFilas*sizeof(int *)))==NULL)
     {
         printf("\nInsuficiente memoria.\n");
@@ -41,6 +41,7 @@ int main()
         }
     }
     
+    //reserva de memoria para estrellas:
     if((estrellas=(int **)malloc(nFilas*sizeof(int *)))==NULL)
     {
         printf("\nInsuficiente memoria.\n");
@@ -54,40 +55,38 @@ int main()
         }
     }
     
+    //inicializar a Ceros el mapa de salida:
     inicializar_mapa(estrellas, nFilas, nColumnas);
     
+    //leer los datos del array
     leer_array(array, nFilas, nColumnas);
     
+    //indicar estrellas en el mapa:
     crear_mapa(array, estrellas, nFilas, nColumnas);
     
+    //visualizar mapa de estrellas:
     visualizar_mapa(estrellas, nFilas, nColumnas);
 
     return (0);
 }
 
-int solicitar_Filas(int numero)
+int solicitartamano(int numero, int a)
 {
     int Ok=0;
-
-    do{
-        printf("\nInserta en número de Filas:\n");
-        fflush(stdout);
-        fpurge(stdin);
-        Ok=scanf("%d", &numero);
-    }while(!Ok && numero<1);
     
-    return numero;
-}
-
-int solicitar_Columnas(int numero)
-{
-    int Ok=0;
-
-    do{
-        printf("\nInserta en número de Columnas:\n");
-        fflush(stdout);
-        fpurge(stdin);
+    do
+    {
+        if(a==0)
+        {
+            printf("\nInserta el número de Filas:\n");
+        }
+        else
+        {
+            printf("\nInserta el número de Columnas:\n");
+        }
         Ok=scanf("%d", &numero);
+        fflush(stdin);  
+        fpurge(stdin);
     }while(!Ok && numero<1);
     
     return numero;
@@ -118,6 +117,7 @@ void leer_array(int **array, int nFilas, int nColumnas)
         
         for(j=0;j<nColumnas;j++)
         {
+            //Es necesario que los valores de los elementos estén entre 0 y 20:
             do
             {
                 printf("\nInserta el elemento %d-%d\n", i+1, j+1);

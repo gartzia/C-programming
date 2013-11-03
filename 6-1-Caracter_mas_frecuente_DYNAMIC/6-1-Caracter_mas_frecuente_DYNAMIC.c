@@ -23,6 +23,8 @@ int main()
     int *frecuencia=NULL;
     
     printf("\n--------------Contador de carácteres repetidos--------------\n");
+    
+    //solicitar el tamaño del array
     nColumnas=solicitar_numero_caracteres(nColumnas);
     
     //reservar memoria para cadena
@@ -39,9 +41,16 @@ int main()
         return -1;
     }
     
+    //lee los elementos del array
     leer_array(cadena, nColumnas);
+    
+    //inicializa el array frecuencia
     inicializar_array(frecuencia, nColumnas);
+    
+    //calcula el número de veces que se repiten los carácteres
     maximos(cadena, frecuencia, nColumnas);
+    
+    //visualiza los elementos que más se repiten
     visualizar_max_repetidos(cadena, frecuencia, nColumnas);
     
     return 0;

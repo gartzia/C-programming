@@ -26,14 +26,18 @@ void mostrar_cuenta(int cuenta[]);
 int main() {
     
     int cuenta[RANGO], opcion, codigo;
-        
+    
+    //solicitar el número de cuenta y el código de seguridad
     opcion=solicitud(cuenta, &codigo);
     
+    //si todo está correcto, calcular la operación correspondiente al código introducido
+    //y comprobar que el resultado es correcto:
     if(opcion==3)
     {
         opcion=operacion(cuenta, codigo);
     }
     
+    //visualizar resultado:
     mostrar(opcion, cuenta);
 
     return (0);

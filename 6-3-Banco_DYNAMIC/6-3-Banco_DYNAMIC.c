@@ -27,23 +27,28 @@ int main() {
     
     int nColumnas=0;
     int *cuenta, opcion, codigo;
-        
+    
+    //solicitar número de dígitos de la cuenta (Columnas del array)
     nColumnas=solicitar_numero_digitos(nColumnas);
     
-    //reservar memoria
+    //reservar memoria para la cuenta
     if((cuenta=(int *)malloc(nColumnas*sizeof(int)))==NULL)
     {
         printf("\nInsuficiente memoria libre.\n");
         return -1;
     }
     
+    //solicitar el número de cuenta y el código de seguridad
     opcion=solicitud(cuenta, nColumnas, &codigo);
     
+    //si todo está correcto, calcular la operación correspondiente al código introducido
+    //y comprobar que el resultado es correcto:
     if(opcion==3)
     {
         opcion=operacion(cuenta, nColumnas, codigo);
     }
     
+    //visualizar resultado:
     mostrar(opcion, cuenta, nColumnas);
 
     return (0);

@@ -26,11 +26,20 @@ int main()
 {
     int cadena[50], tamano, x_ma, y;
     
+    //solicitar el tamaño del array
     tamano=tamano_array(tamano);
+    
+    //leer los datos del array
     leer_array(cadena, tamano);
+    
+    //calcular media aritmética
     x_ma=media_aritmetica(cadena, tamano);
     visualiza_media(x_ma);
+    
+    //calcular y visualizar moda
     moda(cadena, tamano);
+    
+    //calcular desviacion stipica
     y=desviacion_tipica(cadena, tamano);
     visualiza_desviacion(y);
 

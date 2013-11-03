@@ -23,31 +23,35 @@ int main() {
     int nColumnas=0;
     int *array_x, *array_y, *array_z;
     
+    //solicitar el tamaño del array
     nColumnas=solicitar_numero_elementos(nColumnas);
     
-    //reservar memoria
+    //reservar memoria para array_x
     if((array_x=(int *)malloc(nColumnas*sizeof(int)))==NULL)
     {
         printf("\nInsuficiente memoria libre.\n");
         return -1;
     }
     
+    //reservar memoria para array_y
     if((array_y=(int *)malloc(nColumnas*sizeof(int)))==NULL)
     {
         printf("\nInsuficiente memoria libre.\n");
         return -1;
     }
     
+    //reservar memoria para array_z
     if((array_z=(int *)malloc(nColumnas*sizeof(int)))==NULL)
     {
         printf("\nInsuficiente memoria libre.\n");
         return -1;
     }
 //-------------------
-    
+    //lee los elementos de array_x
     peticion_array('X', nColumnas);
     leer_array(array_x, nColumnas);
     
+    //lee los elementos de array_y
     peticion_array('Y', nColumnas);
     leer_array(array_y, nColumnas);
     
@@ -55,14 +59,19 @@ int main() {
     printf("\t\t\t*\tRESULTADO\t*");
     printf("\n\t\t\t*************************\n\n\n");
     
+    //visualiza los elementos de array_x y array_y
     visualizar_array(array_x, nColumnas, 'X');
     visualizar_array(array_y, nColumnas, 'Y');
     
+    //compara los arrays y guarda en array_z los resultados
     comparar_arrays(array_x, array_y, array_z, nColumnas);
+    
+    //visualiza el número de elementos Mayores y Menores entre array_x y array_y
     contador(array_z, nColumnas);
 
     return (0);
 }
+
 int solicitar_numero_elementos(int nColumnas)
 {
     printf("\nInserta el numero de elemntos a comparar:\n");

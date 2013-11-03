@@ -23,10 +23,17 @@ int main() {
     
     int array_x[RANGO], array_y[RANGO], array_z[RANGO];
     
+    //inicializar arrays:
     inicializar_array(array_x);
     inicializar_array(array_y);
+    
+    //lee los elementos de array_x y array_y
     peticion_array(array_x, array_y);
+    
+    //compara los arrays y guarda en array_z los resultados
     comparar_arrays(array_x, array_y, array_z);
+    
+    //visualiza el número de elementos Mayores y Menores entre array_x y array_y
     contador(array_z);
 
     return (0);
