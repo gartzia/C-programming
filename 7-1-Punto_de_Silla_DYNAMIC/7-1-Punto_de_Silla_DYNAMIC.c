@@ -36,14 +36,13 @@ int main()
     if ((array=(int **)malloc(nFilas*sizeof(int *))) == NULL)
     {
         printf("\nInsuficiente espacio de memoria:\n");
-        return (-1);
+        //return (-1);
     }
 
         for(i=0;i<nFilas;i++)
         {
             array[i]=(int *)malloc(nColumnas*sizeof(int));
-        }
-    
+        }    
     
     //reservar_memoria array_t - Matriz A transpuesta
     if ((array_t=(int **)malloc(nColumnas*sizeof(int *))) == NULL)
@@ -155,7 +154,8 @@ void llenar_array(int **array, int nFilas, int nColumnas)
         printf("\nFila %d:\n", i);
         for(j=0;j<nColumnas;j++)
         {
-            scanf("%1d", &array[i][j]);
+          //scanf("%1d", &array[i][j]); //numero de 0 a 9, recoge dígito a dígito
+          scanf("%d", &array[i][j]); //numeros enteros, separados por espacios o Enters, etc.
         }
     }
 }
@@ -185,7 +185,7 @@ void visualizar_array(int **array, int nFilas, int nColumnas, int tipo)
     }
     else
     {
-        printf("Matriz A Transpuesta:\n");
+        printf("Matriz A Traspuesta:\n");
     }
     
     for(i=0;i<nFilas;i++)
@@ -194,7 +194,7 @@ void visualizar_array(int **array, int nFilas, int nColumnas, int tipo)
         printf("\t");
         for(j=0;j<nColumnas;j++)
         {
-            printf("%d ", array[i][j]);
+            printf("%d\t", array[i][j]);
         }
         printf("\n");
     }
@@ -230,7 +230,7 @@ void calcular_mayores(int **array, int **indices, int nFilas, int nColumnas)
             }
         }
         indices[a][j]=array[a][j];
-        printf("Mayores A%d-%d: %d\n", a, j, indices[a][j]);
+        //printf("Mayores A%d-%d: %d\n", a, j, indices[a][j]);
     }
 }
 
@@ -238,7 +238,6 @@ void calcuar_menores(int **array, int **indices2, int nFilas, int nColumnas)
 {
     int a, i, j;
     
-    printf("---------------\n");
     for(a=0;a<nFilas;a++)
     {
         for(i=0,j=0;i<nColumnas;i++)
@@ -249,7 +248,7 @@ void calcuar_menores(int **array, int **indices2, int nFilas, int nColumnas)
             }
         }
         indices2[a][j]=array[a][j];
-        printf("Menores A%d-%d: %d\n", a,j, indices2[a][j]);
+        //printf("Menores A%d-%d: %d\n", a,j, indices2[a][j]);
     }
 }
 
@@ -266,6 +265,7 @@ void comprobar_punto_de_silla(int **array, int **array_t, int **indices, int **i
                 {
                     if((repes=repetido(i, j, array, nColumnas)<2) && (repes=repetido(j, i, array_t, nColumnas)<2))
                     {
+                        printf("---------------\n");
                         printf("\nPunto de Silla: %d -> A:%d-%d\n", indices[i][j], i+1,j+1);
                     }
                 }
