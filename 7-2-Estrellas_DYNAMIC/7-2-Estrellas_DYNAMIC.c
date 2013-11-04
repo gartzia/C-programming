@@ -12,6 +12,7 @@
  * 
  */
 int solicitartamano(int numero, int a);
+int **reserva_memoria(int nFilas, int nColumnas);
 void inicializar_mapa(int **estrellas, int nFilas, int nColumnas);
 void leer_array(int **array, int nFilas, int nColumnas);
 void crear_mapa(int **array, int **estrellas, int nFilas, int nColumnas);
@@ -27,44 +28,24 @@ int main()
     nFilas=solicitartamano(nFilas, 0);
     nColumnas=solicitartamano(nColumnas, 1);
     
-    //reservar memoria para array:
-    if((array=(int **)malloc(nFilas*sizeof(int *)))==NULL)
-    {
-        printf("\nInsuficiente memoria.\n");
-        return -1;
-    }
-    else
-    {
-        for(i=0;i<nFilas;i++)
-        {
-            array[i]=(int *)malloc(nColumnas*sizeof(int));
-        }
-    }
+    //-----RESERVA DE MEMORIA-----
+    //para array:
+    array=reserva_memoria(nFilas, nColumnas);
+    //para estrellas:
+    estrellas=reserva_memoria(nFilas, nColumnas);
     
-    //reserva de memoria para estrellas:
-    if((estrellas=(int **)malloc(nFilas*sizeof(int *)))==NULL)
-    {
-        printf("\nInsuficiente memoria.\n");
-        return -1;
-    }
-    else
-    {
-        for(i=0;i<nFilas;i++)
-        {
-            estrellas[i]=(int *)malloc(nColumnas*sizeof(int));
-        }
-    }
-    
+    //-----LECTURA DE DATOS-----
     //inicializar a Ceros el mapa de salida:
     inicializar_mapa(estrellas, nFilas, nColumnas);
-    
     //leer los datos del array
     leer_array(array, nFilas, nColumnas);
     
+    //-----TRATAMIENTO DE DATOS-----
     //indicar estrellas en el mapa:
     crear_mapa(array, estrellas, nFilas, nColumnas);
     
-    //visualizar mapa de estrellas:
+    //-----VISUALIZACIÓN DE DATOS-----
+    //mapa de estrellas:
     visualizar_mapa(estrellas, nFilas, nColumnas);
 
     return (0);
@@ -90,6 +71,26 @@ int solicitartamano(int numero, int a)
     }while(!Ok && numero<1);
     
     return numero;
+}
+
+int **reserva_memoria(int nFilas, int nColumnas)
+{
+    int i, **array=NULL;
+    
+    if((array=(int **)malloc(nFilas*sizeof(int *)))==NULL)
+    {
+        printf("\nInsuficiente memoria.\n");
+        return NULL;
+    }
+    else
+    {
+        for(i=0;i<nFilas;i++)
+        {
+            array[i]=(int *)malloc(nColumnas*sizeof(int));
+        }
+    }
+    
+    return array;
 }
 
 void inicializar_mapa(int **estrellas, int nFilas, int nColumnas)
@@ -147,15 +148,21 @@ void crear_mapa(int **array, int **estrellas, int nFilas, int nColumnas)
 
 int sumador(int **array,int i,int j)
 {
-    int suma1, suma2, suma3, sumatotal;
+    int suma;
+    int inicio=i-1, final=i+1;
+    int inicio2=j-1, final2=j+1;
     
-    suma1=array[i-1][j-1]+array[i-1][j]+array[i-1][j+1];
-    suma2=array[i][j-1]+array[i][j]+array[i][j+1];
-    suma3=array[1+1][j-1]+array[1+1][j]+array[1+1][j+1];
+    for(i=inicio;i<=final;i++)
+    {
+        for(j=inicio2;j<=final2;j++)
+        {
+            suma+=array[i][j];
+        }
+    }
     
-    sumatotal=(suma1+suma2+suma3)/9;
+    suma/=9;
     
-    return sumatotal;
+    return suma;
 }
 
 void visualizar_mapa(int **estrellas,int nFilas,int nColumnas)

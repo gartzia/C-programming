@@ -12,6 +12,7 @@
  * 
  */
 int solicitar_numero_elementos(int nColumnas);
+int *reserva_memoria(int nColumnas);
 void peticion_array(char a, int nColumnas);
 void leer_array(int *array, int nColumnas);
 void visualizar_array(int *array, int nColumnas, char a);
@@ -26,43 +27,31 @@ int main() {
     //solicitar el tamaño del array
     nColumnas=solicitar_numero_elementos(nColumnas);
     
+    //-----RESERVA DE MEMORIA-----
     //reservar memoria para array_x
-    if((array_x=(int *)malloc(nColumnas*sizeof(int)))==NULL)
-    {
-        printf("\nInsuficiente memoria libre.\n");
-        return -1;
-    }
+    array_x=reserva_memoria(nColumnas);
+    //para array_y
+    array_y=reserva_memoria(nColumnas);
+    //para array_z
+    array_z=reserva_memoria(nColumnas);
     
-    //reservar memoria para array_y
-    if((array_y=(int *)malloc(nColumnas*sizeof(int)))==NULL)
-    {
-        printf("\nInsuficiente memoria libre.\n");
-        return -1;
-    }
-    
-    //reservar memoria para array_z
-    if((array_z=(int *)malloc(nColumnas*sizeof(int)))==NULL)
-    {
-        printf("\nInsuficiente memoria libre.\n");
-        return -1;
-    }
-//-------------------
+    //-----LECTURA DE DATOS-----
     //lee los elementos de array_x
     peticion_array('X', nColumnas);
     leer_array(array_x, nColumnas);
-    
     //lee los elementos de array_y
     peticion_array('Y', nColumnas);
     leer_array(array_y, nColumnas);
     
+    //-----VISUALIZACIÓN DE DATOS-----
     printf("\n\n\n\t\t\t*************************\n");
     printf("\t\t\t*\tRESULTADO\t*");
-    printf("\n\t\t\t*************************\n\n\n");
-    
-    //visualiza los elementos de array_x y array_y
+    printf("\n\t\t\t*************************\n\n\n"); 
+    //elementos de array_x y array_y
     visualizar_array(array_x, nColumnas, 'X');
     visualizar_array(array_y, nColumnas, 'Y');
     
+    //-----TRATAMIENTO DE DATOS-----
     //compara los arrays y guarda en array_z los resultados
     comparar_arrays(array_x, array_y, array_z, nColumnas);
     
@@ -80,6 +69,19 @@ int solicitar_numero_elementos(int nColumnas)
     scanf("%d", &nColumnas);
     
     return nColumnas;
+}
+
+int *reserva_memoria(int nColumnas)
+{
+    int *array=NULL;
+    
+    if((array=(int *)malloc(nColumnas*sizeof(int)))==NULL)
+    {
+        printf("\nInsuficiente memoria libre.\n");
+        return NULL;
+    }
+    
+    return array;
 }
 
 void peticion_array(char a, int nColumnas)
@@ -114,6 +116,7 @@ void visualizar_array(int *array, int nColumnas, char a)
 
 void comparar_arrays(int *array_x, int *array_y, int *array_z, int nColumnas)
 {
+    //compara cada elemento de array_x con array_y, según el caso, almacena -1, 0, 1 en array_z
     int i;
     
     for(i=0;i<nColumnas;i++)
@@ -139,6 +142,8 @@ void comparar_arrays(int *array_x, int *array_y, int *array_z, int nColumnas)
 
 void contador(int *array_z, int nColumnas)
 {
+    //cuenta el número de elementos menores (-1) y mayores (1) en array_z
+    //y los almacena en las variables 'mayor' y 'menor'
     int i, mayor=0, menor=0;
     
     printf("\n\t\t\tElementos del array Z:\n");

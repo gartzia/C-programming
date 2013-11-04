@@ -12,6 +12,7 @@
  * 
  */
 int tamano_array(int tamano);
+int *reserva_memoria(int tamano);
 void leer_array(int *cadena, int tamano);
 int media_aritmetica(int *cadena, int tamano);
 void visualiza_media(int x_ma);
@@ -29,23 +30,17 @@ int main()
     //solicitar el tamaño del array
     tamano=tamano_array(tamano);
     
-    //reserva de memoria para cadena
-    if((cadena=(int *)malloc(tamano*sizeof(int)))==NULL)
-    {
-        printf("\nInsuficiente memoria libre.\n");
-        return -1;
-    }
+    //-----RESERVA DE MEMORIA------
+    //para cadena
+    cadena=reserva_memoria(tamano);
+    //para cadena2
+    cadena2=reserva_memoria(tamano);
     
-    //reserva de memoria para cadena2
-    if((cadena2=(int *)malloc(tamano*sizeof(int)))==NULL)
-    {
-        printf("\nInsuficiente memoria para calcular la 'Moda'.\n");
-        return -1;
-    }
-    
+    //-----LECTURA DE DATOS------
     //leer los datos del array
     leer_array(cadena, tamano);
     
+    //-----TRATAMIENTO DE DATOS-----
     //calcular media aritmética
     x_ma=media_aritmetica(cadena, tamano);
     visualiza_media(x_ma);
@@ -71,6 +66,19 @@ int tamano_array(int tamano)
     }while(!Ok || tamano<1 || tamano>50);
     
     return tamano;
+}
+
+int *reserva_memoria(int tamano)
+{
+    int *array=NULL;
+    
+    if((array=(int *)malloc(tamano*sizeof(int)))==NULL)
+    {
+        printf("\nInsuficiente memoria libre.\n");
+        return NULL;
+    }
+    
+    return array;
 }
 
 void leer_array(int *cadena, int tamano)

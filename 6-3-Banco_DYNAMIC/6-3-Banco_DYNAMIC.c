@@ -12,6 +12,7 @@
  * 
  */
 int solicitar_numero_digitos(int nColumnas);
+int *reserva_memoria(int nColumnas);
 int solicitud (int *cuenta, int nColumnas, int *codigo);
 void solicitar_cuenta(int *cuenta, int nColumnas);
 int solicitar_codigo ();
@@ -31,16 +32,15 @@ int main() {
     //solicitar número de dígitos de la cuenta (Columnas del array)
     nColumnas=solicitar_numero_digitos(nColumnas);
     
-    //reservar memoria para la cuenta
-    if((cuenta=(int *)malloc(nColumnas*sizeof(int)))==NULL)
-    {
-        printf("\nInsuficiente memoria libre.\n");
-        return -1;
-    }
+    //-----RESERVA DE MEMORIA------
+    //para la cuenta
+    cuenta=reserva_memoria(nColumnas);
     
+    //-----LECTURA DE DATOS-----
     //solicitar el número de cuenta y el código de seguridad
     opcion=solicitud(cuenta, nColumnas, &codigo);
     
+    //-----TRATAMIENTO DE DATOS-----
     //si todo está correcto, calcular la operación correspondiente al código introducido
     //y comprobar que el resultado es correcto:
     if(opcion==3)
@@ -48,7 +48,8 @@ int main() {
         opcion=operacion(cuenta, nColumnas, codigo);
     }
     
-    //visualizar resultado:
+    //-----VISUALIZACIÓN DE DATOS-----
+    //resultado:
     mostrar(opcion, cuenta, nColumnas);
 
     return (0);
@@ -67,6 +68,18 @@ int solicitar_numero_digitos(int nColumnas)
     }while(!Ok && nColumnas<1);
     
     return nColumnas;
+}
+
+int *reserva_memoria(int nColumnas)
+{
+    int *cuenta=NULL;
+    if((cuenta=(int *)malloc(nColumnas*sizeof(int)))==NULL)
+    {
+        printf("\nInsuficiente memoria libre.\n");
+        return NULL;
+    }
+    
+    return cuenta;
 }
 
 int solicitud (int *cuenta, int nColumnas, int *codigo)
