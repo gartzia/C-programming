@@ -1,6 +1,6 @@
 /* 
  * File:   7-3-Punto_de_Silla_DYNAMIC.c
- * Author: Gartzia
+ * Author: jordi
  *
  * Created on 29 de octubre de 2013, 18:32
  */
@@ -95,7 +95,7 @@ int main()
     traspuesta(array, array_t, nFilas, nColumnas);
     
     //Visualizar Matriz A Transpuesta
-    visualizar_array(array_t, nFilas, nColumnas, 1);
+    visualizar_array(array_t, nColumnas, nFilas, 1);
 
     //Inicializar arrays: indices, indices2, indices_t y indices2_t
     inicializar_indices(indices, nFilas, nColumnas);
@@ -182,31 +182,24 @@ void visualizar_array(int **array, int nFilas, int nColumnas, int tipo)
     if(tipo==0)
     {
         printf("Matriz A:\n");
-        for(i=0;i<nFilas;i++)
-        {
-            printf("\n");
-            printf("\t");
-            for(j=0;j<nColumnas;j++)
-            {
-                printf("%d ", array[i][j]);
-            }
-            printf("\n");
-        }
     }
     else
     {
         printf("Matriz A Transpuesta:\n");
-        for(i=0;i<nColumnas;i++)
-        {
-            printf("\n");
-            printf("\t");
-            for(j=0;j<nFilas;j++)
-            {
-                printf("%d ", array[i][j]);
-            }
-            printf("\n");
-        }
     }
+    
+    for(i=0;i<nFilas;i++)
+    {
+        printf("\n");
+        printf("\t");
+        for(j=0;j<nColumnas;j++)
+        {
+            printf("%d ", array[i][j]);
+        }
+        printf("\n");
+    }
+    
+    
 }
 
 void inicializar_indices(int **array, int nFilas, int nColumnas)
