@@ -7,6 +7,7 @@ This repository is intended to help those who have problems with the exercises o
 Programming Fundamentals for ETSIB Telecommunications Engineers.
 
 Please note that the codes can be improved and that may not be the best choice. Only provide guidance.
+
 It is recommended as supportive and never use the file copy, be responsible and study!
 
 -by Jordi Gartzia-
