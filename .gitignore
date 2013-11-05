@@ -150,3 +150,6 @@
 7-2-Estrellas_STATIC/Makefile
 
 7-2-Estrellas_STATIC/dist/Debug/GNU-MacOSX/7-2-estrellas_static
+/7-1-Punto_de_Silla_con_traspuesta_DYNAMIC/build/
+/7-1-Punto_de_Silla_con_traspuesta_DYNAMIC/dist/
+7-1-Punto_de_Silla_con_traspuesta_DYNAMIC/Makefile
