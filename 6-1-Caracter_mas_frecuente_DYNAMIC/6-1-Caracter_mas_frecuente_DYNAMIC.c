@@ -17,6 +17,8 @@ void leer_array(char *cadena, int nColumnas);
 void inicializar_array(int *frecuencia, int nColumnas);
 void maximos(char *cadena, int *frecuencia, int nColumnas);
 void visualizar_max_repetidos(char *cadena, int *frecuencia, int nColumnas);
+void liberar_memoria(char *array);
+void liberar_memoria2(int *array);
 
 int main()
 {
@@ -49,6 +51,10 @@ int main()
     //elementos que más se repiten
     visualizar_max_repetidos(cadena, frecuencia, nColumnas);
     
+    //-----LIBERAR MEMORIA-----
+    liberar_memoria(cadena);
+    liberar_memoria2(frecuencia);
+    
     return 0;
 }
 
@@ -62,8 +68,8 @@ int solicitar_numero_caracteres(int nColumnas)
         printf("\nCuantos carácteres quieres insertar? (los espacios en blanco se tendrán en cuenta)\n");
         fflush(stdout);
         fpurge(stdin);
-        scanf("%d", &nColumnas);
-    }while(!Ok && nColumnas<1);
+        Ok=scanf("%d", &nColumnas);
+    }while(!Ok || nColumnas<1);
     
     return nColumnas;
 }
@@ -165,3 +171,14 @@ void visualizar_max_repetidos(char *cadena, int *frecuencia, int nColumnas)
         }
     }
 }
+
+void liberar_memoria(char *array)
+{
+    free(array);
+}
+
+void liberar_memoria2(int *array)
+{
+    free(array);
+}
+//---FIN---

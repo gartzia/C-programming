@@ -23,6 +23,7 @@ int resta(int *cuenta, int nColumnas);
 int multi(int *cuenta, int nColumnas);
 void mostrar (int opcion, int *cuenta, int nColumnas);
 void mostrar_cuenta(int *cuenta, int nColumnas);
+void liberar_memoria(int *array);
 
 int main() {
     
@@ -52,6 +53,9 @@ int main() {
     //resultado:
     mostrar(opcion, cuenta, nColumnas);
 
+    //-----LIBERAR MEMORIA-----
+    liberar_memoria(cuenta);
+    
     return (0);
 }
 
@@ -65,7 +69,7 @@ int solicitar_numero_digitos(int nColumnas)
         fflush(stdout);
         fpurge(stdin);
         scanf("%d", &nColumnas);
-    }while(!Ok && nColumnas<1);
+    }while(!Ok || nColumnas<1);
     
     return nColumnas;
 }
@@ -283,4 +287,9 @@ void mostrar_cuenta(int *cuenta, int nColumnas)
     }
     
     printf("%d.", cuenta[nColumnas-1]);
+}
+
+void liberar_memoria(int *array)
+{
+    free(array);
 }

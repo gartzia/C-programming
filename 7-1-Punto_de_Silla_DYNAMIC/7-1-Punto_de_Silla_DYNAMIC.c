@@ -18,6 +18,7 @@ void visualizar_array(int **array, int nFilas, int nColumnas);
 int calcular_mayores(int **array, int nFilas, int nColumnas, int no_psilla);
 int calcuar_menores(int **array, int nFilas, int nColumnas, int no_psilla);
 void visualizar_no_psilla(int no_psilla);
+void liberar_memoria(int **array, int nFilas);
 
 int main()
 {  
@@ -47,6 +48,10 @@ int main()
     //-----VISUALIZACIÓN DE DATOS-----
     //mostrar si no hay punto de silla
     visualizar_no_psilla(no_psilla);
+    
+    //-----LIBERAR MEMORIA-----
+    //para array array
+    liberar_memoria(array, nFilas);
     
     return 0;
 }
@@ -86,7 +91,7 @@ int solicitartamano(int numero, int a)
         Ok=scanf("%d", &numero);
         fflush(stdin);  
         fpurge(stdin);
-    }while(!Ok && numero<1);
+    }while(!Ok || numero<1);
     
     return numero;
 }
@@ -206,5 +211,16 @@ void visualizar_no_psilla(int no_psilla)
     {
         printf("\nNo hay punto de silla.\n");
     }
+}
+
+void liberar_memoria(int **array, int nFilas)
+{
+    int i;
+    
+    for(i=0;i<nFilas;i++)
+    {
+        free(array[i]);
+    }
+    free(array);
 }
 //---FIN---

@@ -22,6 +22,8 @@ void calcuar_menores(int **array, int *indices2, int nFilas, int nColumnas);
 int comprobar_punto_de_silla(int **array, int **array_t, int *indices, int *indices2, int nFilas, int nColumnas, int psilla);
 int repetido(int i, int j,int **array, int nColumnas);
 void visualizar_no_psilla(int psilla);
+void liberar_memoria(int **array, int nFilas);
+void liberar_memoria2(int *array);
 
 int main()
 {  
@@ -76,6 +78,15 @@ int main()
     //-----VISUALIZACIÓN-----
     visualizar_no_psilla(psilla);
     
+    //-----LIBERAR MEMORIA-----
+    //para Matriz A
+    liberar_memoria(array,nFilas);
+    //para Matriz Traspuesta
+    liberar_memoria(array_t,nFilas);
+    //para indices e indices2
+    liberar_memoria2(indices);
+    liberar_memoria2(indices2);
+
     return 0;
 }
 
@@ -127,7 +138,7 @@ int solicitartamano(int numero, int a)
         Ok=scanf("%d", &numero);
         fflush(stdin);  
         fpurge(stdin);
-    }while(!Ok && numero<1);
+    }while(!Ok || numero<1);
     
     return numero;
 }
@@ -272,5 +283,21 @@ void visualizar_no_psilla(int psilla)
         printf("---------------\n");
         printf("\nNo hay punto de silla.\n");
     }
+}
+
+void liberar_memoria(int **array, int nFilas)
+{
+    int i;
+    
+    for(i=0;i<nFilas;i++)
+    {
+        free(array[i]);
+    }
+    free(array);
+}
+
+void liberar_memoria2(int *array)
+{
+    free(array);
 }
 //---FIN---

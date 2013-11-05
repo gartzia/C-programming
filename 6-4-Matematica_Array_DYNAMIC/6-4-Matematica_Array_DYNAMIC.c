@@ -22,6 +22,7 @@ void comparar_arrays(int *cadena, int *cadena2, int tamano);
 void visualiar_moda(int *cadena, int *cadena2, int tamano, int frecuencia);
 int desviacion_tipica(int *cadena, int tamano);
 void visualiza_desviacion(int y);
+void liberar_memoria(int *array);
 
 int main()
 {
@@ -51,6 +52,10 @@ int main()
     //calcular desviación típica
     y=desviacion_tipica(cadena, tamano);
     visualiza_desviacion(y);
+    
+    //-----LIBERAR MEMORIA-----
+    liberar_memoria(cadena);
+    liberar_memoria(cadena2);
 
     return (0);
 }
@@ -187,4 +192,9 @@ int desviacion_tipica(int *cadena, int tamano)
 void visualiza_desviacion(int y)
 {
     printf("\nLa desviación típica es: %d.\n", y);
+}
+
+void liberar_memoria(int *array)
+{
+    free(array);
 }

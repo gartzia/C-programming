@@ -18,6 +18,7 @@ void leer_array(int *array, int nColumnas);
 void visualizar_array(int *array, int nColumnas, char a);
 void comparar_arrays(int *array_x, int *array_y, int *array_z, int nColumnas);
 void contador(int *array_z, int nColumnas);
+void liberar_memoria(int *array);
 
 int main() {
     
@@ -58,15 +59,26 @@ int main() {
     //visualiza el número de elementos Mayores y Menores entre array_x y array_y
     contador(array_z, nColumnas);
 
+    //-----LIBERAR MEMORIA-----
+    liberar_memoria(array_x);
+    liberar_memoria(array_y);
+    liberar_memoria(array_z);
+    
     return (0);
 }
 
 int solicitar_numero_elementos(int nColumnas)
 {
-    printf("\nInserta el numero de elemntos a comparar:\n");
-    fflush(stdout);
-    fpurge(stdin);
-    scanf("%d", &nColumnas);
+    int Ok=0;
+    
+    do
+    {
+        printf("\nInserta el numero de elemntos a comparar:\n");
+        fflush(stdout);
+        fpurge(stdin);
+        scanf("%d", &nColumnas);
+    }while(!Ok || nColumnas<1);
+    
     
     return nColumnas;
 }
@@ -165,10 +177,28 @@ void contador(int *array_z, int nColumnas)
             }
         }
     }
+    
+    //para el último elemento
     printf("%d.\n", array_z[nColumnas-1]);
+    if(array_z[nColumnas-1]==1)
+        {
+            mayor++;
+        }
+        else
+        {
+            if(array_z[nColumnas-1]==-1)
+            {
+                menor++;
+            }
+        }
     
     printf("\n\n");
     printf("\n\t-----------------------------------------------------------");
     printf("\n\t|| Hay %d elemento(s) mayor(es) y %d elemento(s) menor(es) ||", mayor, menor);
     printf("\n\t-----------------------------------------------------------\n");
+}
+
+void liberar_memoria(int *array)
+{
+    free(array);
 }

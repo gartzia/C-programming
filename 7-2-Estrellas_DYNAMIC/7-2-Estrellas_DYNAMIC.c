@@ -18,6 +18,7 @@ void leer_array(int **array, int nFilas, int nColumnas);
 void crear_mapa(int **array, int **estrellas, int nFilas, int nColumnas);
 int sumador(int **array,int i,int j);
 void visualizar_mapa(int **estrellas,int nFilas,int nColumnas);
+void liberar_memoria(int **array, int nFilas);
 
 int main()
 {
@@ -48,6 +49,12 @@ int main()
     //mapa de estrellas:
     visualizar_mapa(estrellas, nFilas, nColumnas);
 
+    //-----LIBERAR MEMORIA-----
+    //para array array
+    liberar_memoria(array, nFilas);
+    //para array estrellas
+    liberar_memoria(estrellas, nFilas);
+    
     return (0);
 }
 
@@ -68,7 +75,7 @@ int solicitartamano(int numero, int a)
         Ok=scanf("%d", &numero);
         fflush(stdin);  
         fpurge(stdin);
-    }while(!Ok && numero<1);
+    }while(!Ok || numero<1);
     
     return numero;
 }
@@ -185,4 +192,15 @@ void visualizar_mapa(int **estrellas,int nFilas,int nColumnas)
         
         printf("\n");
     }
+}
+
+void liberar_memoria(int **array, int nFilas)
+{
+    int i;
+    
+    for(i=0;i<nFilas;i++)
+    {
+        free(array[i]);
+    }
+    free(array);
 }
