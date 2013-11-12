@@ -1,5 +1,5 @@
 /* 
- * File:   8-1-Borrar_espacios.c
+ * File:   8-1-Contar_palabras.c
  * Author: Gartzia
  *
  * Created on 5 de noviembre de 2013, 20:26
@@ -42,7 +42,7 @@ void clean_buffer()
     fpurge(stdin);
 }
 
-void leer_cadena(char cadena[RANGO]) //char cadena[RANGO] ???
+void leer_cadena(char cadena[RANGO])
 {    
     printf("\nIntroducir una cadena, máximo 10 caracteres:\n");
     printf("\nPara terminar pulsa <ENTER>:\n");
@@ -114,7 +114,7 @@ void intermedio(char frase[RANGO])
 
 void contar_palabras(char frase[RANGO])
 {
-    int i, longitud, cnt;
+    int i, longitud, cnt=0;
     
     longitud=strlen(frase);
     

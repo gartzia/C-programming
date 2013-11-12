@@ -166,3 +166,6 @@
 8-2-Palindromo/Makefile
 
 8-3-DNI_NIF/Makefile
+/8-1-Contar_palabras/build/
+/8-1-Contar_palabras/dist/
+8-1-Contar_palabras/Makefile

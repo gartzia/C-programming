@@ -16,7 +16,7 @@ void clean_buffer();
 void read_data(char *cadena);
 void non_letter_eraser(char *frase);
 void capital_letters(char *frase);
-void palindrome(char *frase/*, int i, int longitud*/);
+void palindrome(char *frase);
 
 int main()
 {
@@ -37,8 +37,15 @@ int main()
     return (0);
 }
 
+void clean_buffer()
+{
+    fflush(stdout);
+    fpurge(stdin);
+}
+
 void read_data(char *cadena)
 {
+    printf("\nInserta una cadena:\n");
     fgets(cadena, RANGO, stdin);
 }
 
