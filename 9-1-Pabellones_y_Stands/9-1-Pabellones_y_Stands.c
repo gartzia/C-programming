@@ -35,11 +35,11 @@ typedef struct //datos de cada pabellón
     float tarifa;
 }pabellon_datos;
 
-typedef struct //cadena para cada mensaje
+/*typedef struct //cadena para cada mensaje
 {
     char mensaje[NC_MENSAJES];
     
-}menu_datos;
+}menu_datos;*/
 
 /*
  * 
@@ -51,7 +51,7 @@ void pausa();
 empresa_datos **reservar_memoria_empresas();
 //void re_reserva_memoria_empresas(empresa_datos **empresas, int numero_bytes);
 pabellon_datos **reservar_memoria_pabellones();
-void liberar_memoria_empresas(empresa_datos **ptr_empresas);
+void liberar_memoria_empresas(empresa_datos **ptr_empresas, int n_empresas);
 void liberar_memoria_pabellones(pabellon_datos **ptr_pabellones);
 
 /**/
@@ -59,18 +59,19 @@ void ingresar_metros_pabellones(pabellon_datos **ptr_pabellones);
 void ingresar_tarifas(pabellon_datos **ptr_pabellones);
 void visualizar_tarifas(pabellon_datos **ptr_pabellones);
 /**/
-void menu(empresa_datos **empresas, pabellon_datos **pabellones);
-int showmenu(menu_datos *mensajes, int opcion);
+void menu(empresa_datos **empresas, pabellon_datos **pabellones, int *n_empresas);
+int showmenu(char **mensajes, int opcion);
 /**/
-void ingresar_datos(empresa_datos **ptr_empresas, pabellon_datos **ptr_pabellones, int *n_empresas);
+void ingresar_empresa(empresa_datos **ptr_empresas, pabellon_datos **ptr_pabellones, int *n_empresas);
 void borrar_enter(empresa_datos *empresas);
 int comprobrar_si_existe(char *nombre, empresa_datos **ptr_empresas, int n_empresas);
-float precio_de_alquiler(int dias, float metros_del_stand, float tarifa);
+//float precio_de_alquiler(int dias, float metros_del_stand, float tarifa);
 float actualizar_datos_pabellon(int numero_pabellon, float metros_del_stand, pabellon_datos **pabellones);
-void borrar_empresa(empresa_datos **ptr_empresas, int n_empresas);
-void ordenar_empresas(empresa_datos **empresas, int n_empresas);
+//void borrar_empresa(empresa_datos **ptr_empresas, int n_empresas);
+void ordenar(empresa_datos **ptr_empresas, int n_empresas);
+//void ordenar_empresas(empresa_datos **empresas, int n_empresas);
 /**/
-void borra_empresa_seleccionada(empresa_datos **ptr_empresas, int n_empresas, pabellon_datos **ptr_pabellones);
+void borra_empresa_seleccionada(empresa_datos **ptr_empresas, int *n_empresas, pabellon_datos **ptr_pabellones);
 void borrar_enter_nombre(char *nombre);
 /**/
 void modificar_tarifa(empresa_datos **ptr_empresas, int n_empresas, pabellon_datos **ptr_pabellones);
@@ -81,8 +82,9 @@ void visualizar_pabellones(pabellon_datos **ptr_pabellones);
 int main()
 {
     /********DECLARACIONES********/
-    empresa_datos **ptr_empresas=NULL; //array de punteros para Stands
-    pabellon_datos **ptr_pabellones=NULL; //array de punteros para pabellones
+    empresa_datos **ptr_empresas=NULL;          //array de punteros para Stands
+    pabellon_datos **ptr_pabellones=NULL;       //array de punteros para pabellones
+    int n_empresas=0;                           //número de empresas, ordenar=0
     
     /********RESERVA MEMORIA********/
     ptr_empresas=reservar_memoria_empresas(); // reservar memoria para 50 empresas
@@ -94,10 +96,10 @@ int main()
     visualizar_tarifas(ptr_pabellones);
 
     /********MENU********/
-    menu(ptr_empresas, ptr_pabellones);
+    menu(ptr_empresas, ptr_pabellones, &n_empresas);
     
     /********LIBERACIÓN MEMORIA********/
-    liberar_memoria_empresas(ptr_empresas);
+    liberar_memoria_empresas(ptr_empresas, n_empresas);
     liberar_memoria_pabellones(ptr_pabellones);
 
     printf("\n\nTODO OK\n\n");
@@ -158,13 +160,29 @@ pabellon_datos **reservar_memoria_pabellones()
     return ptr_pabellones;
 }
 
-void liberar_memoria_empresas(empresa_datos **ptr_empresas)
+void liberar_memoria_empresas(empresa_datos **ptr_empresas, int n_empresas)
 {
-    free(ptr_empresas);
+    int i;
+    
+    if(n_empresas!=0)
+    {
+        for(i=0;i<n_empresas;i++)
+        {
+            free(ptr_empresas[i]);
+        }   
+    }
+    free(ptr_empresas);       
 }
 
 void liberar_memoria_pabellones(pabellon_datos **ptr_pabellones)
 {
+    int i;
+    
+    for(i=0;i<N_PABELLONES;i++)
+    {
+        free(ptr_pabellones[i]);
+    }
+    
     free(ptr_pabellones);
 }
 
@@ -212,18 +230,23 @@ void visualizar_tarifas(pabellon_datos **ptr_pabellones)
     {
         printf("Pabellón %d: %.2f€/m^2 --- ", i+1, ptr_pabellones[i]->tarifa);
     }
-    printf("Pabellón %d: %.2f\n", N_PABELLONES, ptr_pabellones[N_PABELLONES-1]->tarifa);
+    printf("Pabellón %d: %.2f€/m^2\n", N_PABELLONES, ptr_pabellones[N_PABELLONES-1]->tarifa);
     
     printf("\n\n");
 }
 
-void menu(empresa_datos **ptr_empresas, pabellon_datos **ptr_pabellones)
+void menu(empresa_datos **ptr_empresas, pabellon_datos **ptr_pabellones, int *n_empresas)
 {
-    int opcion=0, n_empresas=0/*número de empresas, ordenar=0*/;
-    menu_datos mensajes[N_MENSAJES]=
+    int opcion=0;
+    char *mensajes[N_MENSAJES]={"Añadir un Stand",
+                                "Eliminar un Stand",
+                                "Modificar la tarifa de un pabellón",
+                                "Visualizar la información de los Stands y los pabellones",
+                                "Salir del programa"};
+    /*menu_datos mensajes[N_MENSAJES]=
     {
         {"Añadir un Stand"},{"Eliminar un Stand"},{"Modificar la tarifa de un pabellón"},{"Visualizar la información de los Stands y los pabellones"},{"Salir del programa"}
-    };
+    };*/
     
     while(opcion!=5)
     {
@@ -232,30 +255,31 @@ void menu(empresa_datos **ptr_empresas, pabellon_datos **ptr_pabellones)
         switch(opcion)
         {
             case 1:
-                ++n_empresas;
-                ingresar_datos(ptr_empresas, ptr_pabellones, &n_empresas);
+                ingresar_empresa(ptr_empresas, ptr_pabellones, n_empresas);
                 break;
+                
             case 2:
-                if(n_empresas>0)
+                if(*n_empresas>0)
                 {
                     //borrar empresa (con liberar memoria)
                     borra_empresa_seleccionada(ptr_empresas, n_empresas, ptr_pabellones);
-                    (n_empresas)--;
                 }
                 else
                 {
                     printf("\nNo hay empresas registradas.\n");
                 }
                 break;
+                
             case 3:
-                modificar_tarifa(ptr_empresas, n_empresas, ptr_pabellones);
+                modificar_tarifa(ptr_empresas, *n_empresas, ptr_pabellones);
                 break;
+                
             case 4:
                 //
-                if(n_empresas>0)
+                if(*n_empresas>0)
                 {
-                    ordenar_empresas(ptr_empresas, n_empresas);
-                    visualizar_empresas(ptr_empresas, n_empresas);
+                    //ordenar_empresas(ptr_empresas, *n_empresas);
+                    visualizar_empresas(ptr_empresas, *n_empresas);
                     visualizar_pabellones(ptr_pabellones);
                 }
                 else
@@ -263,13 +287,14 @@ void menu(empresa_datos **ptr_empresas, pabellon_datos **ptr_pabellones)
                     printf("\nNo hay empresas registradas.\n");
                 }
                 break;
+                
             case 5:
                 break;
         }
     }
 }
 
-int showmenu(menu_datos *mensajes, int opcion)
+int showmenu(char **mensajes, int opcion)
 {
     int i;
     
@@ -280,7 +305,7 @@ int showmenu(menu_datos *mensajes, int opcion)
     
         for(i=0;i<N_MENSAJES;i++)
         {
-            printf("%d.-%s\n", i+1, mensajes[i].mensaje);
+            printf("%d.-%s\n", i+1, mensajes[i]);
         }
         printf("\n");
         scanf("%d", &opcion);
@@ -291,16 +316,19 @@ int showmenu(menu_datos *mensajes, int opcion)
     return opcion;
 }
 
-void ingresar_datos(empresa_datos **ptr_empresas, pabellon_datos **ptr_pabellones, int *n_empresas)
+void ingresar_empresa(empresa_datos **ptr_empresas, pabellon_datos **ptr_pabellones, int *n_empresas)
 {
-    float alquiler/*precio del alquiler*/, libre/*metros libres*/;
+    float libre; //metros libres
     int existe;
     
-//-----Reserva de estructura
+    //incremento el número de empresas
+    ++*n_empresas;
+    
+    //Reserva de estructura
     ptr_empresas[*n_empresas-1]=(empresa_datos *)malloc(sizeof(empresa_datos));
-//-----
+
     printf("\nNúmero de empresas: %d\n", *n_empresas);
-//-----    
+
     printf("\n-------------------------------------\n");
     printf("\nRellene los campos:\n");
     
@@ -310,12 +338,17 @@ void ingresar_datos(empresa_datos **ptr_empresas, pabellon_datos **ptr_pabellone
     
     borrar_enter(ptr_empresas[*n_empresas-1]);
     
-    existe=comprobrar_si_existe(ptr_empresas[*n_empresas-1]->nombre_empresa, ptr_empresas, *n_empresas);
+    existe=comprobrar_si_existe(
+            ptr_empresas[*n_empresas-1]->nombre_empresa,
+            ptr_empresas, *n_empresas);
     
     if(existe>1)
     {
         printf("\nHay una empresa registrada con ese nombre.\n");
-        borrar_empresa(ptr_empresas, *n_empresas);
+        
+        //borro la empresa liberando la memoria:
+        free(ptr_empresas[*n_empresas-1]);
+        
         (*n_empresas)--;
     }
     else
@@ -333,23 +366,43 @@ void ingresar_datos(empresa_datos **ptr_empresas, pabellon_datos **ptr_pabellone
         scanf("%f", &ptr_empresas[*n_empresas-1]->metros_del_stand);
 
         //***********************
-        libre=actualizar_datos_pabellon(ptr_empresas[*n_empresas-1]->numero_pabellon, ptr_empresas[*n_empresas-1]->metros_del_stand, ptr_pabellones);
+        libre=actualizar_datos_pabellon(
+                ptr_empresas[*n_empresas-1]->numero_pabellon,
+                ptr_empresas[*n_empresas-1]->metros_del_stand,
+                ptr_pabellones);
         //***********************
 
-        if(libre>0)
+        if(libre>=0)
         {
-            //***
-            ptr_pabellones[ptr_empresas[*n_empresas-1]->numero_pabellon-1]->metros_alquilados=ptr_pabellones[ptr_empresas[*n_empresas-1]->numero_pabellon-1]->metros_totales-libre;        
+            //actualizo metros alquilados
+            ptr_pabellones[ptr_empresas[*n_empresas-1]->numero_pabellon-1]->metros_alquilados=
+                        ptr_pabellones[ptr_empresas[*n_empresas-1]->numero_pabellon-1]->metros_totales -
+                        libre;        
 
-            alquiler=precio_de_alquiler(ptr_empresas[*n_empresas-1]->dias_de_alquiler, ptr_empresas[*n_empresas-1]->metros_del_stand, ptr_pabellones[ptr_empresas[*n_empresas-1]->numero_pabellon-1]->tarifa);
-
-            ptr_empresas[*n_empresas-1]->precio_alquiler=alquiler;
-            printf("\nEl precio del alquiler es: %.2f€\n", alquiler);
+            //alquiler=precio_de_alquiler(ptr_empresas[*n_empresas-1]->dias_de_alquiler, ptr_empresas[*n_empresas-1]->metros_del_stand, ptr_pabellones[ptr_empresas[*n_empresas-1]->numero_pabellon-1]->tarifa);
+            //ptr_empresas[*n_empresas-1]->precio_alquiler=alquiler;
+            
+            //clacula elprecio del alquiler:
+            ptr_empresas[*n_empresas-1]->precio_alquiler=
+                    ptr_empresas[*n_empresas-1]->metros_del_stand *
+                    ptr_empresas[*n_empresas-1]->dias_de_alquiler *
+                    ptr_pabellones[ptr_empresas[*n_empresas-1]->numero_pabellon-1]->tarifa;
+             
+                    
+            printf("\nEl precio del alquiler es: %.2f€\n",
+                   ptr_empresas[*n_empresas-1]->precio_alquiler);
+            
+            //AQUI INSERTARIÍA LA EMPRESA EN SU POSICIÓN ORDENADA
+            ordenar(ptr_empresas, *n_empresas);
         }
         else//arreglar funcion borrar_empresa
         {
             printf("\nNo hay metros suficientes disponibles en el pabellón %d\n", ptr_empresas[*n_empresas-1]->numero_pabellon);
-            borrar_empresa(ptr_empresas, *n_empresas);
+            
+            //borrar_empresa(ptr_empresas, *n_empresas);
+            //borro la empresa liberando la memoria:
+            free(ptr_empresas[*n_empresas-1]);
+            
             printf("Se han borrado los datos introducidos.\n");
             (*n_empresas)--;
             //realloc
@@ -406,7 +459,7 @@ float actualizar_datos_pabellon(int numero_pabellon, float metros_del_stand, pab
     return libre<0?-1:libre;
 }
 
-float precio_de_alquiler(int dias, float metros_del_stand, float tarifa)
+/*float precio_de_alquiler(int dias, float metros_del_stand, float tarifa)
 {
     float alquiler;
     
@@ -414,12 +467,14 @@ float precio_de_alquiler(int dias, float metros_del_stand, float tarifa)
     
     return alquiler;
 }
-
-void borrar_empresa(empresa_datos **ptr_empresas, int n_empresas)
+*/
+/*void borrar_empresa(empresa_datos **ptr_empresas, int n_empresas)
 {
     free(ptr_empresas[n_empresas-1]); //libero la memoria de esa empresa
 }
+*/
 
+/*
 void ordenar_empresas(empresa_datos **empresas, int n_empresas)
 {
     empresa_datos *paso;
@@ -441,8 +496,46 @@ void ordenar_empresas(empresa_datos **empresas, int n_empresas)
         }
     }
 }
+*/
+void ordenar(empresa_datos **ptr_empresas, int n_empresas)
+{
+    int i, principio=0, final=n_empresas-1, mitad=(principio+final)/2, posicion;
+    empresa_datos *paso=ptr_empresas[n_empresas-1];
+    
+    //busco posicion posible
+    while(principio<final && strcmp(ptr_empresas[n_empresas-1]->nombre_empresa, ptr_empresas[mitad]->nombre_empresa)!=0)
+    {
+        if(strcmp(ptr_empresas[n_empresas-1]->nombre_empresa, ptr_empresas[mitad]->nombre_empresa)<0)
+        {
+            final=mitad-1;
+        }
+        else
+        {
+            principio=mitad+1;
+        }
+        mitad=(principio+final)/2;
+    }
+    
+    //comparo donde entra
+    if(strcmp(ptr_empresas[n_empresas-1]->nombre_empresa, ptr_empresas[mitad]->nombre_empresa)<0)
+    {
+        posicion=mitad;
+    }
+    else
+    {
+        posicion=mitad+1;
+    }
+    
+    //desplazo punteros
+    for(i=(n_empresas)-1;i>=posicion;i--)
+    {
+        ptr_empresas[i+1]=ptr_empresas[i];
+    }
+    
+    ptr_empresas[posicion]=paso; //paso la estructura recogida a la posición del array correspondiente
+}
 
-void borra_empresa_seleccionada(empresa_datos **ptr_empresas, int n_empresas, pabellon_datos **ptr_pabellones)
+void borra_empresa_seleccionada(empresa_datos **ptr_empresas, int *n_empresas, pabellon_datos **ptr_pabellones)
 {
     int i, j, existe=0;
     char nombre[NO_EMPRESAS];
@@ -452,16 +545,21 @@ void borra_empresa_seleccionada(empresa_datos **ptr_empresas, int n_empresas, pa
     fgets(nombre, NO_EMPRESAS, stdin);
     borrar_enter_nombre(nombre);
     
-    for(i=0;i<n_empresas;i++)
+    for(i=0;i<*n_empresas;i++)
     {
         if(strcmp(nombre, ptr_empresas[i]->nombre_empresa)==0)
         {
-            ptr_pabellones[ptr_empresas[i]->numero_pabellon-1]->metros_alquilados-=ptr_empresas[i]->metros_del_stand;
-            borrar_empresa(ptr_empresas, i+1); //libero la memoria de esa empresa
+            //actualizo los metros alquilados:
+            ptr_pabellones[ptr_empresas[i]->numero_pabellon-1]->metros_alquilados -=
+                    ptr_empresas[i]->metros_del_stand;
+            //borro empresa liberando la memoria:
+            free(ptr_empresas[i]);
+            //borrar_empresa(ptr_empresas, i+1); //libero la memoria de esa empresa
             existe++;
-            if(i<n_empresas-1)
+            
+            if(i<*n_empresas-1)
             {
-                for(j=i;i<n_empresas;i++)
+                for(j=i;i<*n_empresas;i++)
                 {
                     ptr_empresas[i]=ptr_empresas[i+1];
                 }
@@ -471,7 +569,11 @@ void borra_empresa_seleccionada(empresa_datos **ptr_empresas, int n_empresas, pa
     
     if(existe==0)
     {
-        printf("\nNo existe empresa condicho nombre.\n");
+        printf("\nNo existe empresa con dicho nombre.\n");
+    }
+    else
+    {
+        (*n_empresas)--;
     }
 }
 
@@ -497,14 +599,18 @@ void modificar_tarifa(empresa_datos **ptr_empresas, int n_empresas, pabellon_dat
     limpiar_buffer();
     scanf("%d-%f", &pabellon, &nueva_tarifa);
     
-    ptr_pabellones[pabellon]->tarifa=nueva_tarifa;
+    ptr_pabellones[pabellon-1]->tarifa=nueva_tarifa;
+    printf("\ntarifa del pabellón %d: %f\n", pabellon, ptr_pabellones[pabellon]->tarifa);
     
     for(i=0;i<n_empresas;i++)
     {
         if(ptr_empresas[i]->numero_pabellon==pabellon)
         {
-            ptr_empresas[i]->precio_alquiler=precio_de_alquiler(ptr_empresas[i]->dias_de_alquiler, ptr_empresas[i]->metros_del_stand, nueva_tarifa);
-            
+            //ptr_empresas[i]->precio_alquiler=precio_de_alquiler(ptr_empresas[i]->dias_de_alquiler, ptr_empresas[i]->metros_del_stand, nueva_tarifa);
+            ptr_empresas[i]->precio_alquiler=
+                    ptr_empresas[i]->dias_de_alquiler *
+                    ptr_empresas[i]->metros_del_stand *
+                    nueva_tarifa;
         }
     }
 }
