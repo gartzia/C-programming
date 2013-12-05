@@ -69,6 +69,7 @@ int comprobrar_si_existe(char *nombre, empresa_datos **ptr_empresas, int n_empre
 float actualizar_datos_pabellon(int numero_pabellon, float metros_del_stand, pabellon_datos **pabellones);
 //void borrar_empresa(empresa_datos **ptr_empresas, int n_empresas);
 void ordenar(empresa_datos **ptr_empresas, int n_empresas);
+int busqueda_binaria(char *nombre, empresa_datos **ptr_empresas, int n_empresas);
 //void ordenar_empresas(empresa_datos **empresas, int n_empresas);
 /**/
 void borra_empresa_seleccionada(empresa_datos **ptr_empresas, int *n_empresas, pabellon_datos **ptr_pabellones);
@@ -195,7 +196,7 @@ void ingresar_metros_pabellones(pabellon_datos **ptr_pabellones)
         ptr_pabellones[i]=(pabellon_datos *)malloc(N_PABELLONES*sizeof(pabellon_datos));
     }
     
-    printf("\n%*c-----Insercción metros cuadrados de los pabellones-----\n", JUSTIFICADO, justificado);
+    printf("\n%*c-----Inserta los metros cuadrados de los pabellones-----\n", JUSTIFICADO, justificado);
     
     for(i=0;i<N_PABELLONES;i++)
     {
@@ -208,7 +209,7 @@ void ingresar_tarifas(pabellon_datos **ptr_pabellones)
 {
     int i; char justificado=' ';
     
-    printf("\n%*c-----Insercción de las tarifas de los pabellones-----\n", JUSTIFICADO, justificado);
+    printf("\n%*c     -----Inserta las tarifas de los pabellones-----\n", JUSTIFICADO, justificado);
     
     for(i=0;i<N_PABELLONES;i++)
     {
@@ -342,7 +343,7 @@ void ingresar_empresa(empresa_datos **ptr_empresas, pabellon_datos **ptr_pabello
             ptr_empresas[*n_empresas-1]->nombre_empresa,
             ptr_empresas, *n_empresas);
     
-    if(existe>1)
+    if(existe==1)
     {
         printf("\nHay una empresa registrada con ese nombre.\n");
         
@@ -429,13 +430,15 @@ void borrar_enter(empresa_datos *empresas)
 
 int comprobrar_si_existe(char *nombre, empresa_datos **ptr_empresas, int n_empresas)
 {
-    int i, existe=0;
+    int existe=0, mitad;
     
-    for(i=0;i<n_empresas;i++)
+    if(n_empresas>1)
     {
-        if(strcmp(nombre, ptr_empresas[i]->nombre_empresa)==0)
+        mitad=busqueda_binaria(nombre, ptr_empresas, n_empresas);
+
+        if(strcmp(nombre, ptr_empresas[mitad]->nombre_empresa)==0)
         {
-            existe++;
+            existe=1;
         }
     }
     
@@ -499,22 +502,10 @@ void ordenar_empresas(empresa_datos **empresas, int n_empresas)
 */
 void ordenar(empresa_datos **ptr_empresas, int n_empresas)
 {
-    int i, principio=0, final=n_empresas-1, mitad=(principio+final)/2, posicion;
+    int i, posicion, mitad;
     empresa_datos *paso=ptr_empresas[n_empresas-1];
     
-    //busco posicion posible
-    while(principio<final && strcmp(ptr_empresas[n_empresas-1]->nombre_empresa, ptr_empresas[mitad]->nombre_empresa)!=0)
-    {
-        if(strcmp(ptr_empresas[n_empresas-1]->nombre_empresa, ptr_empresas[mitad]->nombre_empresa)<0)
-        {
-            final=mitad-1;
-        }
-        else
-        {
-            principio=mitad+1;
-        }
-        mitad=(principio+final)/2;
-    }
+    mitad=busqueda_binaria(ptr_empresas[n_empresas-1]->nombre_empresa, ptr_empresas, n_empresas);
     
     //comparo donde entra
     if(strcmp(ptr_empresas[n_empresas-1]->nombre_empresa, ptr_empresas[mitad]->nombre_empresa)<0)
@@ -535,6 +526,64 @@ void ordenar(empresa_datos **ptr_empresas, int n_empresas)
     ptr_empresas[posicion]=paso; //paso la estructura recogida a la posición del array correspondiente
 }
 
+int busqueda_binaria(char *nombre, empresa_datos **ptr_empresas, int n_empresas)
+{
+    int principio=0, final=n_empresas-1, mitad=(principio+final)/2;
+    
+    //busco posicion posible
+    while(principio<final && strcmp(nombre, ptr_empresas[mitad]->nombre_empresa)!=0)
+    {
+        if(strcmp(nombre, ptr_empresas[mitad]->nombre_empresa)<0)
+        {
+            final=mitad-1;
+        }
+        else
+        {
+            principio=mitad+1;
+        }
+        mitad=(principio+final)/2;
+    }
+    
+    return mitad;
+}
+
+void borra_empresa_seleccionada(empresa_datos **ptr_empresas, int *n_empresas, pabellon_datos **ptr_pabellones)
+{
+    int j, mitad;
+    char nombre[NO_EMPRESAS];
+    
+    printf("\nInserta el nombre de la empresa a borra:\n");
+    limpiar_buffer();
+    fgets(nombre, NO_EMPRESAS, stdin);
+    borrar_enter_nombre(nombre);
+    
+    mitad=busqueda_binaria(nombre, ptr_empresas, *n_empresas);
+    
+    if(strcmp(nombre, ptr_empresas[mitad]->nombre_empresa)==0)
+    {
+        //actualizo los metros alquilados:
+        ptr_pabellones[ptr_empresas[mitad]->numero_pabellon-1]->metros_alquilados -=
+                ptr_empresas[mitad]->metros_del_stand;
+        //borro empresa liberando la memoria:
+        free(ptr_empresas[mitad]);
+        //borrar_empresa(ptr_empresas, i+1); //libero la memoria de esa empresa
+        //existe++;
+
+        if(mitad<*n_empresas-1)
+        {
+            for(j=mitad;mitad<*n_empresas;mitad++)
+            {
+                ptr_empresas[mitad]=ptr_empresas[mitad+1];
+            }
+        }
+        (*n_empresas)--;
+    }    
+    else
+    {
+        printf("\nNo existe empresa con dicho nombre.\n");
+    }
+}
+/*
 void borra_empresa_seleccionada(empresa_datos **ptr_empresas, int *n_empresas, pabellon_datos **ptr_pabellones)
 {
     int i, j, existe=0;
@@ -576,7 +625,7 @@ void borra_empresa_seleccionada(empresa_datos **ptr_empresas, int *n_empresas, p
         (*n_empresas)--;
     }
 }
-
+*/
 void borrar_enter_nombre(char *nombre)
 {
     int longitud;
