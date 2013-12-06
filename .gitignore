@@ -173,3 +173,8 @@
 9-00-Examen_Parcial/Makefile
 
 9-1-Pabellones_y_Stands/Makefile
+/prueba/dist/
+/prueba/build/
+/9-1-Pabellones_y_Stands/dist/
+/9-1-Pabellones_y_Stands/build/
+9-1-Pabellones_y_Stands/prueba
