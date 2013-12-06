@@ -1,5 +1,5 @@
 /* 
- * File:   9-1_2-Pabellones_y_Stands.c
+ * File:   9-1-Pabellones_y_Stands.c
  * Author: Gartzia
  *
  * Created on 25 de noviembre de 2013, 18:43
