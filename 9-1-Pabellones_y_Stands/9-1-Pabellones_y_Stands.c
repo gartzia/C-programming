@@ -801,6 +801,4 @@ void visualizar_pabellones(pabellon_datos **ptr_pabellones)
     }    
     
     pausa(1);
-    
-    system("clear");
 }
