@@ -182,3 +182,6 @@
 10-2-Factoria/Makefile
 
 10-1-Censo/Makefile
+/10-3-Aeropuerto/dist/
+/10-3-Aeropuerto/build/
+10-3-Aeropuerto/Makefile
