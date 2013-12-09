@@ -11,18 +11,20 @@
 
 #define MAX_VUELOS 10
 #define MAX_PLAZAS 100
-#define HORAS 24
+#define HORAS 23
+#define MINUTOS 59
 #define N_DESTINO 15 //Nº caracteres
 #define SALIDA 6 //Nº caracteres (hh:mm + '\0'))
 
-#define N_MENSAJES 6 //Nª de opciones en menu
+#define N_MENSAJES 7 //Nª de opciones en menu
 #define NCARAC_MEN 100 //Nº caracteres por mensaje
 #define MENS_1 "Información de los vuelos"
 #define MENS_2 "Añadir un nuevo vuelo"
 #define MENS_3 "Cancelar un vuelo"
 #define MENS_4 "Modificar horario de salida de un vuelo"
 #define MENS_5 "Actualizar el número de plazas libres de un vuelo"
-#define MENS_6 "Salir del programa"
+#define MENS_6 "Eliminar vuelo"
+#define MENS_7 "Salir del programa"
 /*
  * 
  */
@@ -50,6 +52,7 @@ void visualizar_vuelos(vuelo_datos **vuelo, int *n_vuelos);
 void aniadir_vuelo(vuelo_datos **vuelo, int *n_vuelos);
 void borrar_enter(char *nombre, int n_vuelos);
 void convertir_a_mayusculas(vuelo_datos **vuelo, int n_vuelos);
+int comprobar_horario(char *nombre);
 int comprobrar_si_existe(vuelo_datos **vuelos, int n_vuelos);
 void ordenar(vuelo_datos **vuelo, int n_vuelos);
 int busqueda_binaria(char *nombre, vuelo_datos **vuelo, int n_vuelos);
@@ -61,6 +64,8 @@ void cancelar_vuelo(vuelo_datos **vuelo, int *n_vuelos);
 void modificar_salida(vuelo_datos **vuelo, int *n_vuelos);
 /**/
 void modificar_plazasl(vuelo_datos **vuelo, int *n_vuelos);
+/**/
+void eliminar_vuelo(vuelo_datos **vuelo, int *n_vuelos);
 /**/
 int main()
 {
@@ -123,7 +128,7 @@ void menu()
     
     
     
-    while(opcion!=6)
+    while(opcion!=N_MENSAJES)
     {
         opcion=showmenu();
         
@@ -150,17 +155,22 @@ void menu()
             case 5:
                 modificar_plazasl(vuelo, &n_vuelos);
                 break;
+            case 6:
+                eliminar_vuelo(vuelo, &n_vuelos);
+                break;
         }
     }
 }
 
 int showmenu()
 {
-    char mensajes[N_MENSAJES][NCARAC_MEN]={MENS_1,MENS_2,MENS_3,MENS_4,MENS_5,MENS_6};
+    char mensajes[N_MENSAJES][NCARAC_MEN]={MENS_1,MENS_2,MENS_3,MENS_4,MENS_5,MENS_6,MENS_7};
     unsigned opcion, i;
     
     do
     {
+        system("clear");
+        
         printf("\n------------------------------------------------\n");
         printf("\nElija una de las siguientes opciones:\n\n");
     
@@ -186,7 +196,7 @@ void abrir_fichero(vuelo_datos **vuelo, int *n_vuelos)
     if((pf=fopen("VUELOS.dat","rb"))==NULL)
     {
         printf("Error al abrir/leer el fichero VUELOS.dat.\n");
-        exit (EXIT_FAILURE);
+        //exit (EXIT_FAILURE);
     }
     else
     {
@@ -228,30 +238,30 @@ void visualizar_vuelos(vuelo_datos **vuelo, int *n_vuelos)
 {
     int i;
     
-    abrir_fichero(vuelo, n_vuelos);
-    
-    if(*n_vuelos)
-    {
-        printf("%10s%10s%10s%10s\n\n", "NºVUELO", "DESTINO", "HORA DE SALIDA", "NºPLAZAS LIBRES");
+    //if(*n_vuelos)
+    //{
+        abrir_fichero(vuelo, n_vuelos);
+
+        printf("%10s%10s%20s%20s\n\n", "NºVUELO", "DESTINO", "HORA DE SALIDA", "NºPLAZAS LIBRES");
         for(i=0;i<*n_vuelos;i++)
         {
-            printf("%10d%10s%10s%10d\n",
+            printf("%7d%12s%16s%16d\n",
                     vuelo[i]->n_vuelo,
                     vuelo[i]->destino,
                     vuelo[i]->salida,
                     vuelo[i]->plazasl);
         }
         printf("\n");
-    }
-    else
-    {
-        printf("\nNo hay vuelos regisrados.\n");
-    }
+    //}
+    //else
+    //{
+      //  printf("\nNo hay vuelos registrados.\n");
+    //}
 }
 
 void aniadir_vuelo(vuelo_datos **vuelo, int *n_vuelos)
 {
-    int existe=0;
+    int existe=0, comprobar;
 
     abrir_fichero(vuelo, n_vuelos);
 
@@ -270,14 +280,25 @@ void aniadir_vuelo(vuelo_datos **vuelo, int *n_vuelos)
     
     convertir_a_mayusculas(vuelo, *n_vuelos);
     
-    printf("\nHorario de Salida (hh:mm): ");
-    limpiar_buffer();
-    scanf("%s", vuelo[*n_vuelos-1]->salida);
-    borrar_enter(vuelo[*n_vuelos-1]->salida, *n_vuelos);
+    do
+    {
+        printf("\nHorario de Salida (hh:mm): ");
+        limpiar_buffer();
+        scanf("%s", vuelo[*n_vuelos-1]->salida);
+        borrar_enter(vuelo[*n_vuelos-1]->salida, *n_vuelos);
+
+        comprobar=comprobar_horario(vuelo[*n_vuelos-1]->salida);
+    }while(comprobar);
     
     printf("\nNº plazas libres; ");
     limpiar_buffer();
     scanf("%d", &vuelo[*n_vuelos-1]->plazasl);
+    do
+    {
+        printf("\nNo puede haber más plazas libres que plazas en total.\nNº plazas libres; ");
+        limpiar_buffer();
+        scanf("%d", &vuelo[*n_vuelos-1]->plazasl);
+    }while(vuelo[*n_vuelos-1]->plazasl>MAX_PLAZAS);
     
     comprobrar_si_existe(vuelo, *n_vuelos);
     
@@ -324,6 +345,27 @@ void convertir_a_mayusculas(vuelo_datos **vuelo, int n_vuelos)
             vuelo[n_vuelos-1]->destino[i]-=32;
         }
     }
+}
+
+int comprobar_horario(char *nombre)
+{
+    int h1, h2, m1, m2, horas, minutos;
+    
+    
+    h1=(int)nombre[0]-48;
+    h2=(int)nombre[1]-48;
+    m1=(int)nombre[3]-48;
+    m2=(int)nombre[4]-48;
+    horas=h1*10+h2;
+    minutos=m1*10+m2;
+
+    if(horas>HORAS || minutos>MINUTOS)
+    {
+        printf("\nIntroduce una hora correcta.\n");
+        return 1;
+    }
+    
+    return 0;
 }
 
 int comprobrar_si_existe(vuelo_datos **vuelos, int n_vuelos)
@@ -489,6 +531,7 @@ void modificar_salida(vuelo_datos **vuelo, int *n_vuelos)
             borrar_enter(salida, *n_vuelos);
             
             strcpy(vuelo[mitad]->salida, salida);
+            printf("\nNºvuelos; %d\n", *n_vuelos);
             ordenar(vuelo, *n_vuelos);
             actualizar_numero_vuelo(vuelo, *n_vuelos);
         }    
@@ -526,6 +569,43 @@ void modificar_plazasl(vuelo_datos **vuelo, int *n_vuelos)
             scanf("%d", &plazas);
             
             vuelo[mitad]->plazasl=plazas;
+        }    
+        else
+        {
+            printf("\nNo existe vuelo con dicho número.\n");
+        }
+    }
+    else
+    {
+        printf("\nNo hay vuelos registrados.\n");
+    }
+    
+    guardar_fichero(vuelo, n_vuelos);
+}
+
+void eliminar_vuelo(vuelo_datos **vuelo, int *n_vuelos)
+{
+    int numero, i, mitad;
+    
+    abrir_fichero(vuelo, n_vuelos);
+    
+    if(*n_vuelos)
+    {
+        printf("\n¿Número del vuelo?: ");
+        limpiar_buffer();
+        scanf("%d", &numero);
+        
+        mitad=busqueda_binaria2(numero, vuelo, *n_vuelos);
+        
+        if(numero==vuelo[mitad]->n_vuelo)
+        {
+            for(i=mitad+1;i<*n_vuelos;i++)
+            {
+                vuelo[mitad]=vuelo[mitad+1];
+                --(*n_vuelos);
+                ordenar(vuelo, *n_vuelos);
+                actualizar_numero_vuelo(vuelo, *n_vuelos);
+            }
         }    
         else
         {
