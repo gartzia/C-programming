@@ -382,7 +382,7 @@ void ordenar(vuelo_datos **vuelo, int n_vuelos)
 {
     int i, posicion, mitad;
     vuelo_datos *paso=vuelo[n_vuelos-1];
-    
+
     mitad=busqueda_binaria(vuelo[n_vuelos-1]->salida, vuelo, n_vuelos);
     
     //compara donde está la posición del puntero
@@ -505,8 +505,9 @@ int busqueda_binaria2(int numero, vuelo_datos **vuelo, int n_vuelos)
 
 void modificar_salida(vuelo_datos **vuelo, int *n_vuelos)
 {
-    int mitad, numero;
+    int mitad, numero, i;
     char salida[SALIDA];
+    vuelo_datos *paso;
     
     abrir_fichero(vuelo, n_vuelos);
     
@@ -526,7 +527,15 @@ void modificar_salida(vuelo_datos **vuelo, int *n_vuelos)
             borrar_enter(salida, *n_vuelos);
             
             strcpy(vuelo[mitad]->salida, salida);
-            printf("\nNºvuelos; %d\n", *n_vuelos);
+            
+            //lo elimino
+            paso=vuelo[mitad];
+            for(i=mitad;mitad<*n_vuelos;mitad++)
+            {
+                vuelo[mitad]=vuelo[mitad+1];
+            }
+            vuelo[*n_vuelos-1]=paso;
+            
             ordenar(vuelo, *n_vuelos);
             actualizar_numero_vuelo(vuelo, *n_vuelos);
         }    
