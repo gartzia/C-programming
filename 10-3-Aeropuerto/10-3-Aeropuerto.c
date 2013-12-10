@@ -146,7 +146,9 @@ void menu()
                         liberar_memoria(vuelo, &n_vuelos);
                 break;
             case 4:
+                        vuelo=reserva_memoria();
                 modificar_salida(vuelo, &n_vuelos);
+                        liberar_memoria(vuelo, &n_vuelos);
                 break;
             case 5:
                 modificar_plazasl(vuelo, &n_vuelos);
@@ -505,7 +507,7 @@ int busqueda_binaria2(int numero, vuelo_datos **vuelo, int n_vuelos)
 
 void modificar_salida(vuelo_datos **vuelo, int *n_vuelos)
 {
-    int mitad, numero, i;
+    int mitad, numero, i, comprobar;
     char salida[SALIDA];
     vuelo_datos *paso;
     
@@ -521,10 +523,16 @@ void modificar_salida(vuelo_datos **vuelo, int *n_vuelos)
 
         if(numero==vuelo[mitad]->n_vuelo)
         {
-            printf("\n¿Horario de Salida a modificar (hh:mm)?: ");
-            limpiar_buffer();
-            scanf("%s", salida);
-            borrar_enter(salida, *n_vuelos);
+            
+            do
+            {
+                printf("\nHorario de Salida (hh:mm): ");
+                limpiar_buffer();
+                scanf("%s", salida);
+                borrar_enter(salida, *n_vuelos);
+
+                comprobar=comprobar_horario(vuelo[*n_vuelos-1]->salida);
+            }while(comprobar);
             
             strcpy(vuelo[mitad]->salida, salida);
             
