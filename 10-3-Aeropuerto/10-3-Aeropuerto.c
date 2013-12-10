@@ -12,7 +12,6 @@
 #define MAX_VUELOS 10
 #define MAX_PLAZAS 100
 #define HORAS 23
-#define MINUTOS 59
 #define N_DESTINO 15 //Nº caracteres
 #define SALIDA 6 //Nº caracteres (hh:mm + '\0'))
 
@@ -338,7 +337,7 @@ void convertir_a_mayusculas(vuelo_datos **vuelo, int n_vuelos)
 
 int comprobar_horario(char *nombre)
 {
-    int h1, h2, m1, m2, horas, minutos;
+    int h1, h2, m1, m2, horas;
     
     h1=(int)nombre[0]-48;
     h2=(int)nombre[1]-48;
@@ -353,7 +352,7 @@ int comprobar_horario(char *nombre)
     }
     else
     {
-        if(m1<0 || m1>5)
+        if(m1<0 || m1>5 || m2<0 || m2>9)
         {
             printf("\nIntroduce una hora correcta.\n");
             return 1;
